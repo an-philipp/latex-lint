@@ -1,7 +1,7 @@
 import argparse
 import logging
 import os
-from check_latex import check_latex
+from latex_lint.check_latex import check_latex
 
 logging.basicConfig(
     format='%(asctime)s | %(name)s [%(levelname)s] %(message)s',
