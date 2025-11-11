@@ -14,6 +14,9 @@ def check_latex(document: Path) -> int:
     logger.info(f"Check {document}")
     with open(document, 'r') as f:
         for i, line in enumerate(f):
+            if line.startswith('%'):
+                continue  # We can do whatever we want in comments, skip this line
+
             for label in re.findall(r"\\label{([^}]*)}", line):
                 try:
                     check_label(label)
