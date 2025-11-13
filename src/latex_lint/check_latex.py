@@ -78,7 +78,7 @@ def check_cite(line: str) -> None:
     :return:
     """
 
-    accept = r".*[a-zA-Z0-9]+~\\cite{[a-z0-9]+}"
+    accept = r".*[a-zA-Z0-9]+~\\cite{[a-z0-9,-_ ]+}"
 
     result = re.match(accept, line)
     if result:
