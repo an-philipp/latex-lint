@@ -26,6 +26,8 @@ def main() -> int:
         for f in files:
             total_files += 1
             path = os.path.join(root, f)
+            if not path.endswith(".tex"):
+                continue
             total_errors += check_latex(path)
 
     if not total_errors:

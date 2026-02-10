@@ -25,7 +25,7 @@ def check_latex(document: Path) -> int:
                     logger.error(f"(line {i+1}) found invalid label: {ex}")
 
 
-            if re.match(r".*\\cite{([^}]*)}", line):
+            if re.search(r".*\\cite{([^}]*)}", line):
                 try:
                     check_cite(line)
                 except ValidationError as ex:
@@ -33,7 +33,7 @@ def check_latex(document: Path) -> int:
                     logger.error(f"(line {i+1}) found invalid citation: {ex}")
 
 
-            if re.match(r".*\\ref{([^}]*)}", line):
+            if re.search(r".*\\ref{([^}]*)}", line):
                 try:
                     check_ref(line)
                 except ValidationError as ex:
@@ -46,14 +46,14 @@ def check_latex(document: Path) -> int:
 
 def check_ref(line: str) -> None:
     """
-    Check that citation don't stand alone and that they are equipped with a protected space
+    Check that citation doesn't stand alone and that they are equipped with a protected space
+    Also the label may contain :: as delimiters
     :param line: string to check
     :return:
     """
 
-    accept = r"[a-zA-Z0-9]+~\\ref{[a-z0-9]+}"
-
-    result = re.match(accept, line)
+    accept = r"~\\ref\{[A-Za-z0-9_\-]+(?:::[A-Za-z0-9_\-]+)*\}"
+    result = re.search(accept, line)
     if result:
         return
     raise ValidationError(f"Invalid reference: {line}")
@@ -63,12 +63,12 @@ def check_label(label: str) -> None:
     make sure labels are in the form
     chapter::<chaptername>::<sectionname>::<subsectionname>
     """
-    accept = r"(?:chapter|fig|tab)::[a-z]+(?:::[a-z_-]+){0,5}$"
+    accept = r"(?:chapter|fig|tab)::[a-z\-_]+(?:::[a-z_\-0-9]+){0,5}"
     result = re.match(accept, label)
     if result:
         return
 
-    raise ValidationError(f'The label: {label} is not a valid label for chapters and sections')
+    raise ValidationError(f'The label: {label} is not a valid label for chapters and sections, figures or tables')
 
 
 def check_cite(line: str) -> None:
@@ -78,9 +78,9 @@ def check_cite(line: str) -> None:
     :return:
     """
 
-    accept = r".*[a-zA-Z0-9]+~\\cite{[a-z0-9,-_ ]+}"
+    accept = r"~\\cite{[a-z0-9,-_ ]+}[?!., ]"
 
-    result = re.match(accept, line)
+    result = re.search(accept, line)
     if result:
         return
     raise ValidationError(f"Invalid citation: {line}")
