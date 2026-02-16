@@ -63,7 +63,7 @@ def check_label(label: str) -> None:
     make sure labels are in the form
     chapter::<chaptername>::<sectionname>::<subsectionname>
     """
-    accept = r"(?:chapter|fig|tab)::[a-z\-_]+(?:::[a-z_\-0-9]+){0,5}"
+    accept = r"(?:chapter|fig|tab|eq)::[a-z\-_]+(?:::[a-z_\-0-9]+){0,5}"
     result = re.match(accept, label)
     if result:
         return
